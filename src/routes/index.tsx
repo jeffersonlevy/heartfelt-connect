@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { portfolioCategories, portfolioProjects } from "../data/portfolio";
 import {
   ArrowRight,
   ChevronDown,
@@ -21,46 +22,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const categories = ["Todos", "Mods", "Maps", "NPCs", "Effects", "Skills", "Bosses", "Weapons", "Armors", "Interfaces"];
+const categories = portfolioCategories;
 
-const projects = [
-  {
-    title: "Crimson Citadel",
-    category: "Maps",
-    image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=85",
-    tag: "World Design",
-  },
-  {
-    title: "Ancient Dragon",
-    category: "Bosses",
-    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1200&q=85",
-    tag: "Custom Boss",
-  },
-  {
-    title: "Arcane Arsenal",
-    category: "Weapons",
-    image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?auto=format&fit=crop&w=1200&q=85",
-    tag: "Custom Assets",
-  },
-  {
-    title: "Eclipse Interface",
-    category: "Interfaces",
-    image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=85",
-    tag: "UI / HUD",
-  },
-  {
-    title: "Celestial Skills",
-    category: "Skills",
-    image: "https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1200&q=85",
-    tag: "VFX",
-  },
-  {
-    title: "Nightfall NPC",
-    category: "NPCs",
-    image: "https://images.unsplash.com/photo-1614728263952-84ea256f9679?auto=format&fit=crop&w=1200&q=85",
-    tag: "3D / Script",
-  },
-];
+const projects = portfolioProjects;
 
 const services = [
   { icon: Layers3, title: "Mods & Sistemas", text: "Mecânicas exclusivas, eventos e sistemas feitos sob medida para o seu servidor." },
@@ -71,7 +35,7 @@ const services = [
 
 function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("Todos");
+  const [activeCategory, setActiveCategory] = useState<(typeof categories)[number]>("Todos");
 
   const filteredProjects =
     activeCategory === "Todos"
@@ -222,22 +186,29 @@ function Index() {
 
         <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filteredProjects.map((project) => (
-            <article key={project.title} className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]">
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <img src={project.image} alt={project.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105 group-hover:brightness-75" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
-                <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur">{project.category}</div>
-                <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
-                  <div>
-                    <div className="text-lg font-bold">{project.title}</div>
-                    <div className="mt-1 text-xs text-zinc-300">{project.tag}</div>
-                  </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 opacity-0 backdrop-blur transition group-hover:opacity-100">
-                    <ExternalLink className="h-4 w-4" />
+            <Link
+              key={project.slug}
+              to="/portfolio/$slug"
+              params={{ slug: project.slug }}
+              className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.025]"
+            >
+              <article>
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img src={project.image} alt={project.title} className="h-full w-full object-cover transition duration-700 group-hover:scale-105 group-hover:brightness-75" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-70" />
+                  <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/80 backdrop-blur">{project.category}</div>
+                  <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between">
+                    <div>
+                      <div className="text-lg font-bold">{project.title}</div>
+                      <div className="mt-1 text-xs text-zinc-300">{project.tag}</div>
+                    </div>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 opacity-0 backdrop-blur transition group-hover:opacity-100">
+                      <ExternalLink className="h-4 w-4" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </Link>
           ))}
         </div>
       </section>
